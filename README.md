@@ -1,5 +1,4 @@
-Candidates: Tuan Muhammad Faiz Bin Tuan Rashid
-Tech Stack: Postman + Newman
+Tuan Muhammad Faiz Bin Tuan Rashid (Postman + Newman)
 
 # Section 2: API Test
 
