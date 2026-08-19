@@ -1,0 +1,107 @@
+{
+  "info": {
+    "name": "GoRest API Tests - Section 2",
+    "description": "Scenario 1: create a user and verify numeric id. Scenario 2: verify status enum on first entry.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Scenario 1 - Create user and verify numeric id",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Jane Doe\",\n  \"gender\": \"female\",\n  \"email\": \"{{$randomEmail}}\",\n  \"status\": \"active\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/public/v2/users",
+          "host": ["{{base_url}}"],
+          "path": ["public", "v2", "users"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code is 201\", function () {",
+              "    pm.response.to.have.status(201);",
+              "});",
+              "",
+              "const jsonData = pm.response.json();",
+              "",
+              "pm.test(\"Response has an id field\", function () {",
+              "    pm.expect(jsonData).to.have.property('id');",
+              "});",
+              "",
+              "pm.test(\"id is in numerical format\", function () {",
+              "    pm.expect(typeof jsonData.id).to.eql('number');",
+              "    pm.expect(Number.isInteger(jsonData.id)).to.be.true;",
+              "});",
+              "",
+              "pm.test(\"Response echoes submitted name, gender, email and status\", function () {",
+              "    const requestBody = JSON.parse(pm.request.body.raw);",
+              "    pm.expect(jsonData.name).to.eql(requestBody.name);",
+              "    pm.expect(jsonData.gender).to.eql(requestBody.gender);",
+              "    pm.expect(jsonData.email).to.eql(requestBody.email);",
+              "    pm.expect(jsonData.status).to.eql(requestBody.status);",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Scenario 2 - Verify status of first entry",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/public/v2/users",
+          "host": ["{{base_url}}"],
+          "path": ["public", "v2", "users"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "const jsonData = pm.response.json();",
+              "",
+              "pm.test(\"Response body is a non-empty array\", function () {",
+              "    pm.expect(jsonData).to.be.an('array');",
+              "    pm.expect(jsonData.length).to.be.above(0);",
+              "});",
+              "",
+              "pm.test(\"Status of first entry is either active or inactive\", function () {",
+              "    pm.expect(['active', 'inactive']).to.include(jsonData[0].status);",
+              "});"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

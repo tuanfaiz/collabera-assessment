@@ -1,0 +1,11 @@
+{
+  "name": "section-2-api-test",
+  "version": "1.0.0",
+  "description": "QA Engineer Assessment - Section 2 API Test (GoRest users API) using Postman + Newman",
+  "scripts": {
+    "test": "newman run postman/GoRest-API-Tests.postman_collection.json -e postman/GoRest-Environment.postman_environment.json"
+  },
+  "devDependencies": {
+    "newman": "^6.2.1"
+  }
+}
